@@ -1,4 +1,6 @@
+# 项目启动
+
 ```
-# shadcn
-pnpm dlx shadcn@latest add button
+pnpm install
+pnpm dev --host 0.0.0.0
 ```
