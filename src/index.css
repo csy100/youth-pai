@@ -1,29 +1,7 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+@import "./scroll-bar.css";
 @custom-variant dark (&:where(.dark, .dark *));
-
-/* 侧边栏滚动条 */
-.sider-scrollbar::-webkit-scrollbar {
-  width: 8px;
-  background: transparent;
-}
-.sider-scrollbar::-webkit-scrollbar-thumb {
-  background: transparent;
-  transition: background 0.2s;
-}
-/* 悬停时显示滚动条 */
-.sider-scrollbar:hover::-webkit-scrollbar-thumb {
-  background: #b5b7bb;
-}
-/* Firefox: 始终占位，只是默认透明 */
-.sider-scrollbar {
-  scrollbar-width: thin; /* 始终占位 */
-  scrollbar-color: transparent transparent; /* 默认透明 */
-  transition: scrollbar-color 0.2s;
-}
-.sider-scrollbar:hover {
-  scrollbar-color: #b5b7bb transparent; /* 悬停时变色 */
-}
 
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
