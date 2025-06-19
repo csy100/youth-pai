@@ -73,7 +73,7 @@ export default function Sider() {
         />
       )}
 
-      <aside className={`fixed top-0 left-0 md:static z-40 h-screen md:h-auto bg-white dark:bg-zinc-900 border-r dark:border-zinc-800 flex flex-col transition-transform md:transition-width duration-300 ${
+      <aside className={`fixed top-0 left-0 md:static z-40 h-screen md:h-full bg-white dark:bg-zinc-900 dark:border-zinc-800 flex flex-col transition-transform md:transition-width duration-300 ${
         collapsed 
           ? 'w-64 -translate-x-full md:translate-x-0 md:w-20' 
           : 'w-64 translate-x-0 md:w-64'
