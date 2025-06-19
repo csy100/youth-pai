@@ -7,7 +7,7 @@ WORKDIR /app
 RUN npm config set registry https://registry.npmmirror.com
 
 # 复制依赖文件
-COPY package.json pnpm-lock.yaml .
+COPY package.json pnpm-lock.yaml ./
 
 # 安装 pnpm
 RUN npm install -g pnpm && pnpm config set registry https://registry.npmmirror.com
