@@ -45,7 +45,11 @@ export default function Sider() {
   const { collapsed } = useSiderStore();
   const location = useLocation();
   return (
-    <aside className={`min-h-screen bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 flex flex-col py-4 transition-width duration-300 ${collapsed ? 'w-20' : 'w-64'}`}>
+    <aside className={`min-h-screen bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 flex flex-col py-4 transition-width duration-300 ${
+      collapsed 
+        ? 'md:w-20 w-0' 
+        : 'md:w-64 w-64'
+    }`}>
       {/* 主菜单：无论是否折叠都渲染 */}
       <nav className="flex flex-col gap-1 px-4">
         {mainMenu.map(item => (
