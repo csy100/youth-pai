@@ -6,6 +6,6 @@ type SiderState = {
 };
 
 export const useSiderStore = create<SiderState>((set) => ({
-  collapsed: false,
+  collapsed: typeof window !== "undefined" && window.innerWidth < 768,
   toggle: () => set((state) => ({ collapsed: !state.collapsed })),
 }));
