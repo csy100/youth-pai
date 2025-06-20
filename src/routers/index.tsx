@@ -5,6 +5,7 @@ import About from '@/views/about'
 import Explore from '@/views/explore'
 import NotFound from '@/views/notfound'
 import Login from '@/views/login'
+import Register from '@/views/register'
 
 const router = createBrowserRouter([
   {
@@ -25,6 +26,10 @@ const router = createBrowserRouter([
   {
     path: '/login',
     element: <Login />
+  },
+  {
+    path: '/register',
+    element: <Register />
   }
 ])
 

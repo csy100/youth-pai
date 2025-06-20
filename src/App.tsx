@@ -9,10 +9,8 @@ export default function App() {
         <Header />
       </div>
       <div className="flex flex-1 overflow-hidden">
-        <div className="overflow-y-auto sider-scrollbar">
-          <Sider />
-        </div>
-        <main className="flex-1 overflow-y-auto sider-scrollbar bg-white dark:bg-zinc-900">
+        <Sider />
+        <main className="flex-1 overflow-y-auto bg-white dark:bg-zinc-900">
           <Outlet />
         </main>
       </div>
