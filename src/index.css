@@ -2,6 +2,36 @@
 @import "tw-animate-css";
 @custom-variant dark (&:where(.dark, .dark *));
 
+/* 全局滚动条美化，适配亮/暗色模式，hover时主题色 */
+html, body, * {
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+  transition: scrollbar-color 0.1s;
+}
+html:hover, body:hover, *:hover {
+  scrollbar-color: #cbcac8 #0000;
+}
+@media (prefers-color-scheme: dark) {
+  html:hover, body:hover, *:hover {
+    scrollbar-color: #cbcac8 #0000;
+  }
+}
+::-webkit-scrollbar {
+  width: 8px;
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: transparent;
+  border-radius: 12px;
+  transition: background 0.1s;
+}
+:hover::-webkit-scrollbar-thumb {
+  background: #cbcac8;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
