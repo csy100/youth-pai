@@ -1,9 +1,10 @@
 import { useState } from 'react';
-import { ChevronUp, ChevronDown, MessageCircle, Share, MoreHorizontal } from 'lucide-react';
+import { ChevronUp, ChevronDown, MessageCircle, Share, MoreHorizontal, Image, Link as LinkIcon, BarChart2 } from 'lucide-react';
 
 export default function Home() {
   const [selectedSort, setSelectedSort] = useState('Best');
 
+  // 模拟更多内容类型的帖子
   const posts = [
     {
       id: 1,
@@ -28,6 +29,48 @@ export default function Home() {
       hasImage: true,
       avatarColor: 'bg-gray-800',
       joinButton: true
+    },
+    {
+      id: 3,
+      subreddit: 'r/reactjs',
+      author: 'u/reactfan',
+      timeAgo: '2 hr. ago',
+      title: 'React 19 新特性体验',
+      content: 'React 19 带来了很多新特性，比如 useOptimistic、action API、全新的 server actions，大家都体验了吗？',
+      upvotes: 88,
+      comments: 23,
+      avatarColor: 'bg-blue-500',
+      hasPoll: true,
+      pollOptions: [
+        { label: '体验过，很棒', votes: 40 },
+        { label: '还没用过', votes: 30 },
+        { label: '没听说', votes: 18 }
+      ]
+    },
+    {
+      id: 4,
+      subreddit: 'r/webdev',
+      author: 'u/webguy',
+      timeAgo: '5 min. ago',
+      title: '推荐一个超好用的免费图床',
+      content: '',
+      upvotes: 12,
+      comments: 2,
+      avatarColor: 'bg-green-500',
+      hasLink: true,
+      link: 'https://imgbed.example.com',
+      linkTitle: 'imgbed.example.com - 免费图床'
+    },
+    {
+      id: 5,
+      subreddit: 'r/Frontend',
+      author: 'u/cssmaster',
+      timeAgo: '10 min. ago',
+      title: 'CSS 一行代码实现多行省略号',
+      content: '只需一行 CSS：text-overflow: ellipsis; white-space: nowrap; overflow: hidden;，你学会了吗？',
+      upvotes: 33,
+      comments: 5,
+      avatarColor: 'bg-pink-500'
     }
   ];
 
@@ -53,13 +96,27 @@ export default function Home() {
       title: "What's your favorite typescript framework",
       upvotes: 11,
       comments: 39
+    },
+    {
+      subreddit: 'r/reactjs',
+      timeAgo: '2 days ago',
+      title: 'React 19 正式发布',
+      upvotes: 120,
+      comments: 45
+    },
+    {
+      subreddit: 'r/webdev',
+      timeAgo: '3 hr. ago',
+      title: '2024 年最值得关注的前端趋势',
+      upvotes: 56,
+      comments: 12
     }
   ];
 
   return (
     <div className="min-h-screen bg-white dark:bg-zinc-900">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        <div className="flex gap-6">
+      <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8 py-4 md:py-6">
+        <div className="flex flex-col md:flex-row gap-6">
           {/* Main Content */}
           <div className="flex-1">
             {/* Sort Options */}
@@ -82,9 +139,9 @@ export default function Home() {
             <div className="space-y-4">
               {posts.map((post) => (
                 <div key={post.id} className="bg-white dark:bg-zinc-900 rounded-lg border border-gray-200 dark:border-zinc-800 hover:border-gray-300 dark:hover:border-zinc-700 transition-colors">
-                  <div className="flex">
+                  <div className="flex flex-row md:flex-row">
                     {/* Vote Section */}
-                    <div className="flex flex-col items-center p-2 bg-gray-50 dark:bg-zinc-950 rounded-l-lg">
+                    <div className="flex flex-col items-center p-2 bg-gray-50 dark:bg-zinc-950 rounded-l-lg md:rounded-l-lg md:rounded-tl-lg md:rounded-bl-lg">
                       <button className="p-1 hover:bg-gray-200 dark:hover:bg-zinc-800 rounded">
                         <ChevronUp className="w-5 h-5 text-gray-400 dark:text-gray-500" />
                       </button>
@@ -117,21 +174,47 @@ export default function Home() {
                         </div>
                       </div>
 
-                      <h2 className="font-medium text-gray-900 dark:text-gray-100 mb-2 cursor-pointer hover:text-blue-600 dark:hover:text-blue-400">
+                      <h2 className="font-medium text-gray-900 dark:text-gray-100 mb-2 cursor-pointer hover:text-blue-600 dark:hover:text-blue-400 text-base md:text-lg">
                         {post.title}
                       </h2>
 
                       {post.content && (
-                        <p className="text-gray-700 dark:text-gray-300 text-sm leading-relaxed mb-3">
+                        <p className="text-gray-700 dark:text-gray-300 text-sm leading-relaxed mb-3 line-clamp-4 md:line-clamp-6">
                           {post.content}
                         </p>
                       )}
 
                       {post.hasImage && (
                         <div className="mb-3">
-                          <div className="w-full h-64 bg-gray-200 dark:bg-zinc-800 rounded-lg flex items-center justify-center">
-                            <span className="text-gray-500 dark:text-gray-400">Image Content</span>
+                          <div className="w-full h-48 md:h-64 bg-gray-200 dark:bg-zinc-800 rounded-lg flex items-center justify-center">
+                            <Image className="w-8 h-8 text-gray-400 dark:text-gray-500" />
+                            <span className="ml-2 text-gray-500 dark:text-gray-400">图片内容</span>
                           </div>
+                        </div>
+                      )}
+
+                      {post.hasPoll && post.pollOptions && (
+                        <div className="mb-3">
+                          <div className="bg-gray-50 dark:bg-zinc-800 rounded-lg p-3">
+                            <div className="flex items-center mb-2 text-xs text-gray-500 dark:text-gray-400">
+                              <BarChart2 className="w-4 h-4 mr-1" /> 投票
+                            </div>
+                            {post.pollOptions.map((opt, idx) => (
+                              <div key={idx} className="flex items-center mb-1">
+                                <div className="flex-1 text-sm text-gray-700 dark:text-gray-200">{opt.label}</div>
+                                <div className="ml-2 text-xs text-gray-500 dark:text-gray-400">{opt.votes}票</div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {post.hasLink && post.link && (
+                        <div className="mb-3">
+                          <a href={post.link} target="_blank" rel="noopener noreferrer" className="flex items-center p-2 bg-gray-50 dark:bg-zinc-800 rounded hover:bg-gray-100 dark:hover:bg-zinc-700 transition-colors">
+                            <LinkIcon className="w-4 h-4 mr-2 text-blue-500" />
+                            <span className="text-blue-600 dark:text-blue-400 text-sm font-medium">{post.linkTitle || post.link}</span>
+                          </a>
                         </div>
                       )}
 
@@ -142,7 +225,7 @@ export default function Home() {
                         </button>
                         <button className="flex items-center space-x-1 hover:bg-gray-100 dark:hover:bg-zinc-800 p-1 rounded">
                           <Share className="w-4 h-4" />
-                          <span>Share</span>
+                          <span>分享</span>
                         </button>
                       </div>
                     </div>
@@ -152,18 +235,17 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Sidebar */}
-          <div className="w-80">
+          {/* Sidebar - Recent Posts，仅桌面端显示 */}
+          <div className="w-full md:w-80 md:block hidden">
             <div className="bg-white dark:bg-zinc-900 rounded-lg border border-gray-200 dark:border-zinc-800 sticky top-20">
               <div className="p-4 border-b border-gray-200 dark:border-zinc-800">
                 <h3 className="font-medium text-gray-900 dark:text-gray-100 flex items-center justify-between">
                   RECENT POSTS
                   <button className="text-blue-500 text-sm hover:text-blue-600 dark:hover:text-blue-400">
-                    Clear
+                    清空
                   </button>
                 </h3>
               </div>
-              
               <div className="divide-y divide-gray-100 dark:divide-zinc-800">
                 {recentPosts.map((post, index) => (
                   <div key={index} className="p-4 hover:bg-gray-50 dark:hover:bg-zinc-950 cursor-pointer">
@@ -173,24 +255,20 @@ export default function Home() {
                           {post.subreddit.charAt(2).toUpperCase()}
                         </span>
                       </div>
-                      
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center text-xs text-gray-500 dark:text-gray-400 mb-1">
                           <span className="font-medium">{post.subreddit}</span>
                           <span className="mx-1">•</span>
                           <span>{post.timeAgo}</span>
                         </div>
-                        
                         <h4 className="text-sm font-medium text-gray-900 dark:text-gray-100 leading-tight mb-2">
                           {post.title}
                         </h4>
-                        
                         <div className="flex items-center text-xs text-gray-500 dark:text-gray-400 space-x-4">
-                          <span>{post.upvotes} upvotes</span>
-                          <span>{post.comments} comments</span>
+                          <span>{post.upvotes} 赞</span>
+                          <span>{post.comments} 评论</span>
                         </div>
                       </div>
-                      
                       {post.hasMedia && (
                         <div className="w-12 h-12 bg-gray-200 dark:bg-zinc-800 rounded flex-shrink-0 flex items-center justify-center">
                           <span className="text-xs text-gray-500 dark:text-gray-400">2:04</span>
@@ -200,7 +278,6 @@ export default function Home() {
                   </div>
                 ))}
               </div>
-              
               <div className="p-4 border-t border-gray-200 dark:border-zinc-800 text-xs text-gray-500 dark:text-gray-400">
                 <div className="flex space-x-4 mb-2">
                   <a href="#" className="hover:text-blue-600 dark:hover:text-blue-400">Reddit Rules</a>
