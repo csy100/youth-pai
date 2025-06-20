@@ -1,0 +1,29 @@
+/* 侧边栏滚动条美化，仅在 hover 时显示，支持暗色模式 */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+  transition: scrollbar-color 0.2s;
+}
+.custom-scrollbar:hover {
+  scrollbar-color: #cbcac8 #0000; /* thumb, track */
+}
+@media (prefers-color-scheme: dark) {
+  .custom-scrollbar:hover {
+    scrollbar-color: #cbcac8 #0000;
+  }
+}
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px;
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: transparent;
+  border-radius: 12px;
+  transition: background 0.2s;
+}
+.custom-scrollbar:hover::-webkit-scrollbar-thumb {
+  background: #f59e42;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+} 

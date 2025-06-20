@@ -12,6 +12,7 @@ import {
 import { useSiderStore } from "@/stores/sider";
 import { Link, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
+import './index.css'
 
 const mainMenu = [
   {
@@ -78,7 +79,7 @@ export default function Sider() {
           ? 'w-64 -translate-x-full md:translate-x-0 md:w-20' 
           : 'w-64 translate-x-0 md:w-64'
       }`}>
-        <div className="flex-1 overflow-y-auto py-4">
+        <div className="flex-1 overflow-y-auto py-4 custom-scrollbar">
           {/* 主菜单：无论是否折叠都渲染 */}
           <nav className="flex flex-col gap-1 px-4">
             {mainMenu.map(item => (
