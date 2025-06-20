@@ -12,40 +12,76 @@ import {
 import { useSiderStore } from "@/stores/sider";
 import { Link, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
-
-const mainMenu = [
-  {
-    icon: HomeIcon,
-    label: "Home",
-    to: "/home",
-  },
-  {
-    icon: FireIcon,
-    label: "Popular",
-    to: "/popular",
-  },
-  {
-    icon: ChatBubbleLeftRightIcon,
-    label: "Answers",
-    to: "/answers",
-    badge: "BETA",
-  },
-  {
-    icon: BookOpenIcon,
-    label: "Explore",
-    to: "/explore",
-  },
-  {
-    icon: UserGroupIcon,
-    label: "All",
-    to: "/all",
-  },
-];
+import { useTranslation } from "react-i18next";
 
 export default function Sider() {
   const { collapsed, toggle } = useSiderStore();
   const location = useLocation();
   const [isMobile, setIsMobile] = useState(false);
+  const { t } = useTranslation();
+
+  const mainMenu = [
+    {
+      icon: HomeIcon,
+      label: t("home"),
+      to: "/home",
+    },
+    {
+      icon: FireIcon,
+      label: t("popular"),
+      to: "/popular",
+    },
+    {
+      icon: ChatBubbleLeftRightIcon,
+      label: t("answers"),
+      to: "/answers",
+      badge: "BETA",
+    },
+    {
+      icon: BookOpenIcon,
+      label: t("explore"),
+      to: "/explore",
+    },
+    {
+      icon: UserGroupIcon,
+      label: t("all"),
+      to: "/all",
+    },
+  ];
+
+  const resourcesMenu = [
+    {
+      icon: InformationCircleIcon,
+      label: t("about"),
+      to: "/about",
+    },
+    {
+      icon: BriefcaseIcon,
+      label: t("advertisement"),
+      to: "/advertisement",
+    },
+    {
+      icon: BookOpenIcon,
+      label: t("youth_pro"),
+      to: "/youth-pro",
+      badge: "BETA",
+    },
+    {
+      icon: ChatBubbleLeftRightIcon,
+      label: t("help"),
+      to: "/help",
+    },
+    {
+      icon: BookOpenIcon,
+      label: t("blog"),
+      to: "/blog",
+    },
+    {
+      icon: BriefcaseIcon,
+      label: t("careers"),
+      to: "/careers",
+    },
+  ];
 
   useEffect(() => {
     const checkIsMobile = () => {
@@ -102,7 +138,7 @@ export default function Sider() {
               <div className="my-4 mx-auto w-[90%] border-t border-zinc-200 dark:border-zinc-800" />
 
               {/* 自定义分组 */}
-              <div className="px-4 text-xs text-zinc-400 mb-2">CUSTOM FEEDS</div>
+              {/* <div className="px-4 text-xs text-zinc-400 mb-2">CUSTOM FEEDS</div>
               <nav className="flex flex-col gap-1 px-4">
                 <SiderItem
                   icon={<PlusCircleIcon className={collapsed ? "w-7 h-7" : "w-5 h-5"} />}
@@ -112,9 +148,8 @@ export default function Sider() {
                   collapsed={collapsed}
                   onItemClick={handleItemClick}
                 />
-              </nav>
-
-              <div className="my-4 mx-auto w-[90%] border-t border-zinc-200 dark:border-zinc-800" />
+              </nav> */}
+              {/* <div className="my-4 mx-auto w-[90%] border-t border-zinc-200 dark:border-zinc-800" /> */}
 
               {/* 社区分组 */}
               <div className="px-4 text-xs text-zinc-400 mb-2">COMMUNITIES</div>
@@ -142,88 +177,18 @@ export default function Sider() {
               {/* 资源分组 */}
               <div className="px-4 text-xs text-zinc-400 mb-2">RESOURCES</div>
               <nav className="flex flex-col gap-1 px-4">
-                <SiderItem
-                  icon={<InformationCircleIcon className={collapsed ? "w-7 h-7" : "w-5 h-5"} />}
-                  label="About Youth"
-                  to="/about-Youth"
-                  active={location.pathname === "/about-Youth"}
-                  collapsed={collapsed}
-                  onItemClick={handleItemClick}
-                />
-                <SiderItem
-                  icon={<BriefcaseIcon className={collapsed ? "w-7 h-7" : "w-5 h-5"} />}
-                  label="Advertise"
-                  to="/advertise"
-                  active={location.pathname === "/advertise"}
-                  collapsed={collapsed}
-                  onItemClick={handleItemClick}
-                />
-                <SiderItem
-                  icon={<BookOpenIcon className={collapsed ? "w-7 h-7" : "w-5 h-5"} />}
-                  label="Youth Pro"
-                  badge="BETA"
-                  to="/Youth-pro"
-                  active={location.pathname === "/Youth-pro"}
-                  collapsed={collapsed}
-                  onItemClick={handleItemClick}
-                />
-                <SiderItem
-                  icon={<ChatBubbleLeftRightIcon className={collapsed ? "w-7 h-7" : "w-5 h-5"} />}
-                  label="Help"
-                  to="/help"
-                  active={location.pathname === "/help"}
-                  collapsed={collapsed}
-                  onItemClick={handleItemClick}
-                />
-                <SiderItem
-                  icon={<BookOpenIcon className={collapsed ? "w-7 h-7" : "w-5 h-5"} />}
-                  label="Blog"
-                  to="/blog"
-                  active={location.pathname === "/blog"}
-                  collapsed={collapsed}
-                  onItemClick={handleItemClick}
-                />
-                <SiderItem
-                  icon={<BriefcaseIcon className={collapsed ? "w-7 h-7" : "w-5 h-5"} />}
-                  label="Careers"
-                  to="/careers"
-                  active={location.pathname === "/careers"}
-                  collapsed={collapsed}
-                  onItemClick={handleItemClick}
-                />
-                <SiderItem
-                  icon={<BriefcaseIcon className={collapsed ? "w-7 h-7" : "w-5 h-5"} />}
-                  label="Careers"
-                  to="/careers"
-                  active={location.pathname === "/careers"}
-                  collapsed={collapsed}
-                  onItemClick={handleItemClick}
-                />
-                <SiderItem
-                  icon={<BriefcaseIcon className={collapsed ? "w-7 h-7" : "w-5 h-5"} />}
-                  label="Careers"
-                  to="/careers"
-                  active={location.pathname === "/careers"}
-                  collapsed={collapsed}
-                  onItemClick={handleItemClick}
-                />
-                <SiderItem
-                  icon={<BriefcaseIcon className={collapsed ? "w-7 h-7" : "w-5 h-5"} />}
-                  label="Careers"
-                  to="/careers"
-                  active={location.pathname === "/careers"}
-                  collapsed={collapsed}
-                  onItemClick={handleItemClick}
-                />
-                <SiderItem
-                  icon={<BriefcaseIcon className={collapsed ? "w-7 h-7" : "w-5 h-5"} />}
-                  label="Careers"
-                  to="/careers"
-                  active={location.pathname === "/careers"}
-                  collapsed={collapsed}
-                  onItemClick={handleItemClick}
-                />
-                
+                {resourcesMenu.map(item => (
+                  <SiderItem
+                    key={item.to}
+                    icon={<item.icon className={collapsed ? "w-7 h-7" : "w-5 h-5"} />}
+                    label={item.label}
+                    to={item.to}
+                    badge={item.badge}
+                    active={location.pathname === item.to}
+                    collapsed={collapsed}
+                    onItemClick={handleItemClick}
+                  />
+                ))}
               </nav>
             </>
           )}
