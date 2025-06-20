@@ -1,13 +1,13 @@
 import {
   HomeIcon,
   FireIcon,
-  PlusCircleIcon,
   UserGroupIcon,
   BookOpenIcon,
   InformationCircleIcon,
   BriefcaseIcon,
   ChatBubbleLeftRightIcon,
   Cog6ToothIcon,
+  PlusCircleIcon,
 } from "@heroicons/react/24/outline";
 import { useSiderStore } from "@/stores/sider";
 import { Link, useLocation } from "react-router-dom";
@@ -83,6 +83,19 @@ export default function Sider() {
     },
   ];
 
+  const communitiesMenu = [
+    {
+      icon: BriefcaseIcon,
+      label: "y/Bitcoin",
+      to: "/y-bitcoin",
+    },
+    {
+      icon: Cog6ToothIcon,
+      label: "y/ChatGPT",
+      to: "/y-chatgpt",
+    },
+  ];
+
   useEffect(() => {
     const checkIsMobile = () => {
       setIsMobile(window.innerWidth < 768);
@@ -114,7 +127,7 @@ export default function Sider() {
           ? 'w-64 -translate-x-full md:translate-x-0 md:w-20' 
           : 'w-64 translate-x-0 md:w-64'
       }`}>
-        <div className="flex-1 overflow-y-auto py-4 custom-scrollbar">
+        <div className="flex-1 overflow-y-auto py-4">
           {/* 主菜单：无论是否折叠都渲染 */}
           <nav className="flex flex-col gap-1 px-4">
             {mainMenu.map(item => (
@@ -153,23 +166,28 @@ export default function Sider() {
 
               {/* 社区分组 */}
               <div className="px-4 text-xs text-zinc-400 mb-2">COMMUNITIES</div>
+              <nav className="flex flex-col gap-1 px-4 py-2">
+                <SiderItem
+                  icon={<PlusCircleIcon className={collapsed ? "w-7 h-7" : "w-5 h-5"} />}
+                  label={t("create_community")}
+                  to="/create-community"
+                  active={location.pathname === "/create-community"}
+                  collapsed={collapsed}
+                  onItemClick={handleItemClick}
+                />
+              </nav>
               <nav className="flex flex-col gap-1 px-4">
-                <SiderItem
-                  icon={<BriefcaseIcon className={collapsed ? "w-7 h-7" : "w-5 h-5"} />}
-                  label="y/Bitcoin"
-                  to="/y-bitcoin"
-                  active={location.pathname === "/y-bitcoin"}
-                  collapsed={collapsed}
-                  onItemClick={handleItemClick}
-                />
-                <SiderItem
-                  icon={<Cog6ToothIcon className={collapsed ? "w-7 h-7" : "w-5 h-5"} />}
-                  label="y/ChatGPT"
-                  to="/y-chatgpt"
-                  active={location.pathname === "/y-chatgpt"}
-                  collapsed={collapsed}
-                  onItemClick={handleItemClick}
-                />
+                {communitiesMenu.map(item => (
+                  <SiderItem
+                    key={item.to}
+                    icon={<item.icon className={collapsed ? "w-7 h-7" : "w-5 h-5"} />}
+                    label={item.label}
+                    to={item.to}
+                    active={location.pathname === item.to}
+                    collapsed={collapsed}
+                    onItemClick={handleItemClick}
+                  />
+                ))}
               </nav>
 
               <div className="my-4 mx-auto w-[90%] border-t border-zinc-200 dark:border-zinc-800" />
@@ -226,7 +244,7 @@ function SiderItem({
         }`}
     >
       {icon}
-      {!collapsed && <span className="flex-1 text-sm">{label}</span>}
+      {!collapsed && <span className="flex-1 text-base">{label}</span>}
       {!collapsed && badge && (
         <span className="ml-2 text-[10px] px-1.5 py-0.5 rounded bg-orange-100 text-orange-600 font-bold">
           {badge}
