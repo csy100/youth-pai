@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Eye, EyeOff, Github, Chrome } from "lucide-react";
+import { Eye, EyeOff, Github, Chrome, ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export default function Login() {
@@ -7,8 +7,16 @@ export default function Login() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-zinc-950 p-4">
-      <div className="w-full max-w-md bg-white dark:bg-zinc-900 rounded-xl shadow-xl border border-gray-200 dark:border-zinc-800">
-        <div className="p-6 sm:p-8">
+      <div className="w-full max-w-md bg-white dark:bg-zinc-900 rounded-xl shadow-xl border border-gray-200 dark:border-zinc-800 relative">
+        <Link
+          to="/home"
+          className="absolute left-4 top-4 flex items-center gap-1 group text-gray-500 dark:text-gray-400 hover:text-orange-600 dark:hover:text-orange-400 text-sm font-medium"
+          title="返回首页"
+        >
+          <ArrowLeft className="w-5 h-5" />
+          <span>回到主页</span>
+        </Link>
+        <div className="p-6 sm:p-8 pt-16">
           <div className="mb-6 text-center">
             <div className="mx-auto mb-3 w-12 h-12 rounded-full bg-orange-500 flex items-center justify-center">
               <span className="text-white text-xl font-bold">Y</span>
