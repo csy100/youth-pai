@@ -3,18 +3,21 @@ import { initReactI18next } from 'react-i18next'
 import LanguageDetector from 'i18next-browser-languagedetector'
 import header from '@/configs/header'
 import sider from '@/configs/sider'
+import authLogin from '@/configs/auth/login'
 
 const resources = {
   en: {
     translation: {
       ...header.en,
       ...sider.en,
+      ...authLogin.en,
     }
   },
   zh: {
     translation: {
       ...header.zh,
       ...sider.zh,
+      ...authLogin.zh,
     }
   }
 }
