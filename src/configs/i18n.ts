@@ -4,6 +4,7 @@ import LanguageDetector from 'i18next-browser-languagedetector'
 import header from '@/configs/header'
 import sider from '@/configs/sider'
 import authLogin from '@/configs/auth/login'
+import authRegister from '@/configs/auth/register'
 
 const resources = {
   en: {
@@ -11,6 +12,7 @@ const resources = {
       ...header.en,
       ...sider.en,
       ...authLogin.en,
+      ...authRegister.en,
     }
   },
   zh: {
@@ -18,6 +20,7 @@ const resources = {
       ...header.zh,
       ...sider.zh,
       ...authLogin.zh,
+      ...authRegister.zh,
     }
   }
 }

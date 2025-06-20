@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { Eye, EyeOff, ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 export default function Register() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const { t } = useTranslation();
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-zinc-950 p-4">
@@ -12,45 +14,45 @@ export default function Register() {
         <Link
           to="/home"
           className="absolute left-4 top-4 flex items-center gap-1 group text-gray-500 dark:text-gray-400 hover:text-orange-600 dark:hover:text-orange-400 text-sm font-medium"
-          title="返回首页"
+          title={t('BackHome')}
         >
           <ArrowLeft className="w-5 h-5" />
-          <span>回到主页</span>
+          <span>{t('BackHome')}</span>
         </Link>
         <div className="p-6 sm:p-8 pt-16">
           <div className="mb-6 text-center">
             <div className="mx-auto mb-3 w-12 h-12 rounded-full bg-orange-500 flex items-center justify-center">
               <span className="text-white text-xl font-bold">Y</span>
             </div>
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">创建 Youth Pai 账号</h2>
-            <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">加入我们，开启你的新旅程</p>
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">{t('RegisterTitle')}</h2>
+            <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">{t('RegisterSubtitle')}</p>
           </div>
           <form className="space-y-5">
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">用户名</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t('Username')}</label>
               <input
                 type="text"
                 className="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-orange-500"
-                placeholder="请输入用户名"
+                placeholder={t('InputUsername')}
                 autoComplete="username"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">邮箱地址</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t('Email')}</label>
               <input
                 type="email"
                 className="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-orange-500"
-                placeholder="请输入邮箱地址"
+                placeholder={t('InputEmail')}
                 autoComplete="email"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">密码</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t('Password')}</label>
               <div className="relative">
                 <input
                   type={showPassword ? "text" : "password"}
                   className="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-orange-500 pr-10"
-                  placeholder="请输入密码"
+                  placeholder={t('InputPassword')}
                   autoComplete="new-password"
                 />
                 <button
@@ -64,12 +66,12 @@ export default function Register() {
               </div>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">确认密码</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t('ConfirmPassword')}</label>
               <div className="relative">
                 <input
                   type={showConfirmPassword ? "text" : "password"}
                   className="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-orange-500 pr-10"
-                  placeholder="请再次输入密码"
+                  placeholder={t('InputConfirmPassword')}
                   autoComplete="new-password"
                 />
                 <button
@@ -88,7 +90,7 @@ export default function Register() {
                     <input id="terms" aria-describedby="terms" type="checkbox" className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-orange-300 dark:bg-zinc-700 dark:border-zinc-600 dark:focus:ring-orange-600 dark:ring-offset-gray-800" required />
                 </div>
                 <div className="ml-3 text-sm">
-                    <label htmlFor="terms" className="text-gray-500 dark:text-gray-300">我同意 <a className="font-medium text-orange-600 hover:underline dark:text-orange-500" href="#">服务条款</a></label>
+                    <label htmlFor="terms" className="text-gray-500 dark:text-gray-300">{t('Agree')} <a className="font-medium text-orange-600 hover:underline dark:text-orange-500" href="#">{t('Terms')}</a></label>
                 </div>
             </div>
 
@@ -96,15 +98,15 @@ export default function Register() {
               type="submit"
               className="w-full py-2.5 rounded-lg bg-orange-600 hover:bg-orange-700 text-white font-semibold transition-all duration-300 ease-in-out"
             >
-              注册
+              {t('RegisterButton')}
             </button>
           </form>
         </div>
         <div className="bg-gray-50 dark:bg-zinc-950/50 px-6 py-4 border-t border-gray-200 dark:border-zinc-800 text-center rounded-b-xl">
-          <p className="text-sm text-gray-600 dark:text-gray-400">
-            已经有账号了？{' '}
-            <Link to="/login" className="font-medium text-orange-600 hover:text-orange-500 dark:text-orange-400 dark:hover:text-orange-300">
-              立即登录
+          <p className="text-base text-gray-600 dark:text-gray-400">
+            {t('AlreadyHaveAccount')}{' '}
+            <Link to="/login" className="text-lg ml-1 font-medium text-orange-600 hover:text-orange-500 dark:text-orange-400 dark:hover:text-orange-300">
+              {t('LoginLink')}
             </Link>
           </p>
         </div>
