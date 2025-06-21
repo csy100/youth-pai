@@ -9,12 +9,12 @@ pnpm dev --host 0.0.0.0
 
 ## 构建镜像
 ```bash
-docker build -t youth-pai .
+docker build -t youth-pai-dev .
 ```
 
 ## 运行容器
 ```bash
-docker run -d -p 80:80 --name youth-pai-app youth-pai
+docker run -d -p 80:80 --name youth-pai-app-dev youth-pai-dev
 ```
 
 ## 查看日志

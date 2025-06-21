@@ -8,6 +8,7 @@ import {
   ChatBubbleLeftRightIcon,
   Cog6ToothIcon,
   PlusCircleIcon,
+  GlobeAmericasIcon,
 } from "@heroicons/react/24/outline";
 import { useSiderStore } from "@/stores/sider";
 import { Link, useLocation } from "react-router-dom";
@@ -38,7 +39,7 @@ export default function Sider() {
       badge: "BETA",
     },
     {
-      icon: BookOpenIcon,
+      icon: GlobeAmericasIcon,
       label: t("explore"),
       to: "/explore",
     },
@@ -165,7 +166,7 @@ export default function Sider() {
               {/* <div className="my-4 mx-auto w-[90%] border-t border-zinc-200 dark:border-zinc-800" /> */}
 
               {/* 社区分组 */}
-              <div className="px-4 text-xs text-zinc-400 mb-2">COMMUNITIES</div>
+              <div className="px-4 text-base text-zinc-400 mb-2">{t("community")}</div>
               <nav className="flex flex-col gap-1 px-4 py-2">
                 <SiderItem
                   icon={<PlusCircleIcon className={collapsed ? "w-7 h-7" : "w-5 h-5"} />}
@@ -193,7 +194,7 @@ export default function Sider() {
               <div className="my-4 mx-auto w-[90%] border-t border-zinc-200 dark:border-zinc-800" />
 
               {/* 资源分组 */}
-              <div className="px-4 text-xs text-zinc-400 mb-2">RESOURCES</div>
+              <div className="px-4 text-base text-zinc-400 mb-2">{t("resources")}</div>
               <nav className="flex flex-col gap-1 px-4">
                 {resourcesMenu.map(item => (
                   <SiderItem
