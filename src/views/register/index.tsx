@@ -29,15 +29,6 @@ export default function Register() {
           </div>
           <form className="space-y-5">
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t('Username')}</label>
-              <input
-                type="text"
-                className="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-orange-500"
-                placeholder={t('InputUsername')}
-                autoComplete="username"
-              />
-            </div>
-            <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t('Email')}</label>
               <input
                 type="email"
@@ -84,14 +75,22 @@ export default function Register() {
                 </button>
               </div>
             </div>
-            
-            <div className="flex items-start">
-                <div className="flex items-center h-5">
-                    <input id="terms" aria-describedby="terms" type="checkbox" className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-orange-300 dark:bg-zinc-700 dark:border-zinc-600 dark:focus:ring-orange-600 dark:ring-offset-gray-800" required />
-                </div>
-                <div className="ml-3 text-sm">
-                    <label htmlFor="terms" className="text-gray-500 dark:text-gray-300">{t('Agree')} <a className="font-medium text-orange-600 hover:underline dark:text-orange-500" href="#">{t('Terms')}</a></label>
-                </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t('VerificationCode')}</label>
+              <div className="flex gap-4">
+                  <input
+                      type="text"
+                      className="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-orange-500"
+                      placeholder={t('InputVerificationCode')}
+                      required
+                  />
+                  <button
+                      type="button"
+                      className="px-4 py-2 rounded-lg bg-orange-100 dark:bg-orange-900/50 text-orange-600 dark:text-orange-400 font-semibold hover:bg-orange-200 dark:hover:bg-orange-900/80 whitespace-nowrap text-sm"
+                  >
+                      {t('SendCode')}
+                  </button>
+              </div>
             </div>
 
             <button
