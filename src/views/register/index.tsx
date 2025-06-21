@@ -1,12 +1,141 @@
-import { useState } from "react";
-import { Eye, EyeOff, ArrowLeft } from "lucide-react";
-import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Eye, EyeOff, ArrowLeft, MailCheck } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { sendEmail, register } from "@/services/auth";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 export default function Register() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const { t } = useTranslation();
+  const navigate = useNavigate();
+  const [showSuccessAlert, setShowSuccessAlert] = useState(false);
+
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+    password_confirm: "",
+    auth_code: "",
+  });
+
+  const [isSending, setIsSending] = useState(false);
+  const [countdown, setCountdown] = useState(0);
+
+  useEffect(() => {
+    const cooldownEnd = localStorage.getItem('codeCooldownEnd');
+    if (cooldownEnd) {
+      const remainingTime = Math.round((parseInt(cooldownEnd, 10) - Date.now()) / 1000);
+      if (remainingTime > 0) {
+        setIsSending(true);
+        setCountdown(remainingTime);
+        const timer = setInterval(() => {
+          setCountdown(prev => {
+            if (prev <= 1) {
+              clearInterval(timer);
+              setIsSending(false);
+              localStorage.removeItem('codeCooldownEnd');
+              return 0;
+            }
+            return prev - 1;
+          });
+        }, 1000);
+        return () => clearInterval(timer); // Cleanup on unmount
+      } else {
+         localStorage.removeItem('codeCooldownEnd');
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (showSuccessAlert) {
+      timer = setTimeout(() => {
+        setShowSuccessAlert(false);
+      }, 5000); // 5秒后自动隐藏
+    }
+    return () => clearTimeout(timer);
+  }, [showSuccessAlert]);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const validateEmail = (email: string): boolean => {
+    if (!email || !/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email)) {
+        return false;
+    }
+    return true;
+  };
+
+  const validatePassword = (password: string): string => {
+      if (!password || password.length < 8 || password.length > 128) {
+          return t('PasswordLengthError');
+      }
+      if (!/^[!-~]+$/.test(password)) {
+          return t('PasswordCharsError');
+      }
+      return "";
+  };
+
+  const handleSendCode = async () => {
+    if (!validateEmail(formData.email)) {
+      alert(t('InvalidEmail'));
+      return;
+    }
+
+    setIsSending(true);
+    try {
+      await sendEmail({ email: formData.email });
+      setShowSuccessAlert(true);
+      const cooldownDuration = 300; // 5 minutes
+      localStorage.setItem('codeCooldownEnd', (Date.now() + cooldownDuration * 1000).toString());
+      setCountdown(cooldownDuration);
+      const timer = setInterval(() => {
+        setCountdown((prev) => {
+          if (prev <= 1) {
+            clearInterval(timer);
+            setIsSending(false);
+            localStorage.removeItem('codeCooldownEnd');
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    } catch (error) {
+      alert((error as Error).message);
+      setIsSending(false);
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    if (!validateEmail(formData.email)) {
+        alert(t('InvalidEmail'));
+        return;
+    }
+
+    const passwordError = validatePassword(formData.password);
+    if (passwordError) {
+        alert(passwordError);
+        return;
+    }
+
+    if (formData.password !== formData.password_confirm) {
+      alert(t('PasswordsDoNotMatch'));
+      return;
+    }
+
+    try {
+      await register(formData);
+      alert("注册成功！");
+      navigate("/login");
+    } catch (error) {
+      alert((error as Error).message);
+    }
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-zinc-950 p-4">
@@ -20,6 +149,15 @@ export default function Register() {
           <span>{t('BackHome')}</span>
         </Link>
         <div className="p-6 sm:p-8 pt-16">
+          {showSuccessAlert && (
+            <Alert className="mb-4">
+              <MailCheck className="h-4 w-4" />
+              <AlertTitle>验证码已发送</AlertTitle>
+              <AlertDescription>
+                请检查您的邮箱，验证码 5 分钟内有效。
+              </AlertDescription>
+            </Alert>
+          )}
           <div className="mb-6 text-center">
             <div className="mx-auto mb-3 w-12 h-12 rounded-full bg-orange-500 flex items-center justify-center">
               <span className="text-white text-xl font-bold">Y</span>
@@ -27,14 +165,18 @@ export default function Register() {
             <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">{t('RegisterTitle')}</h2>
             <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">{t('RegisterSubtitle')}</p>
           </div>
-          <form className="space-y-5">
+          <form className="space-y-5" onSubmit={handleSubmit}>
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t('Email')}</label>
               <input
                 type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleInputChange}
                 className="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-orange-500"
                 placeholder={t('InputEmail')}
                 autoComplete="email"
+                required
               />
             </div>
             <div>
@@ -42,9 +184,13 @@ export default function Register() {
               <div className="relative">
                 <input
                   type={showPassword ? "text" : "password"}
+                  name="password"
+                  value={formData.password}
+                  onChange={handleInputChange}
                   className="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-orange-500 pr-10"
                   placeholder={t('InputPassword')}
                   autoComplete="new-password"
+                  required
                 />
                 <button
                   type="button"
@@ -61,9 +207,13 @@ export default function Register() {
               <div className="relative">
                 <input
                   type={showConfirmPassword ? "text" : "password"}
+                  name="password_confirm"
+                  value={formData.password_confirm}
+                  onChange={handleInputChange}
                   className="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-orange-500 pr-10"
                   placeholder={t('InputConfirmPassword')}
                   autoComplete="new-password"
+                  required
                 />
                 <button
                   type="button"
@@ -80,15 +230,20 @@ export default function Register() {
               <div className="flex gap-4">
                   <input
                       type="text"
+                      name="auth_code"
+                      value={formData.auth_code}
+                      onChange={handleInputChange}
                       className="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-orange-500"
                       placeholder={t('InputVerificationCode')}
                       required
                   />
                   <button
                       type="button"
-                      className="px-4 py-2 rounded-lg bg-orange-100 dark:bg-orange-900/50 text-orange-600 dark:text-orange-400 font-semibold hover:bg-orange-200 dark:hover:bg-orange-900/80 whitespace-nowrap text-sm"
+                      onClick={handleSendCode}
+                      disabled={isSending}
+                      className="cursor-pointer px-4 py-2 rounded-lg bg-orange-100 dark:bg-orange-900/50 text-orange-600 dark:text-orange-400 font-semibold hover:bg-orange-200 dark:hover:bg-orange-900/80 whitespace-nowrap text-sm disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                      {t('SendCode')}
+                      {isSending ? `${countdown}s` : t('SendCode')}
                   </button>
               </div>
             </div>

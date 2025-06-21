@@ -15,6 +15,10 @@ const authRegister = {
     RegisterButton: 'Sign up',
     AlreadyHaveAccount: 'Already have an account?',
     LoginLink: 'Sign in now',
+    InvalidEmail: 'Invalid email format',
+    PasswordLengthError: 'Password must be 8-128 characters long',
+    PasswordCharsError: 'Password can only contain letters, numbers, and special characters',
+    PasswordsDoNotMatch: 'The two passwords do not match',
   },
   zh: {
     BackHome: '回到主页',
@@ -32,6 +36,10 @@ const authRegister = {
     RegisterButton: '注册',
     AlreadyHaveAccount: '已经有账号了？',
     LoginLink: '立即登录',
+    InvalidEmail: '邮箱格式不正确',
+    PasswordLengthError: '密码长度必须在8-128位之间',
+    PasswordCharsError: '密码只能包含字母、数字和特殊字符',
+    PasswordsDoNotMatch: '两次输入的密码不一致',
   }
 }
 export default authRegister
