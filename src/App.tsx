@@ -1,6 +1,7 @@
 import { Outlet } from "react-router-dom";
 import Header from "@/components/header";
 import Sider from "@/components/sider";
+import { Toaster } from "@/components/ui/sonner";
 
 export default function App() {
   return (
@@ -14,6 +15,7 @@ export default function App() {
           <Outlet />
         </main>
       </div>
+      <Toaster />
     </div>
   )
 }

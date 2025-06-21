@@ -4,12 +4,84 @@ import { Link, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { sendEmail, register } from "@/services/auth";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { toast } from "sonner";
 
+const COOLDOWN_DURATION = 300; // 5 minutes in seconds
+
+// --- Helper Functions ---
+const validateEmail = (email: string): boolean => {
+  return !!email && /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email);
+};
+
+const validatePassword = (password: string, t: (key: string) => string): string => {
+  if (!password || password.length < 8 || password.length > 128) {
+    return t('PasswordLengthError');
+  }
+  if (!/^[!-~]+$/.test(password)) {
+    return t('PasswordCharsError');
+  }
+  return "";
+};
+
+
+// --- Custom Hook for Verification Code ---
+function useVerificationCode() {
+  const [isSending, setIsSending] = useState(false);
+  const [countdown, setCountdown] = useState(0);
+
+  useEffect(() => {
+    // On component mount, check for an existing cooldown in localStorage
+    const cooldownEnd = localStorage.getItem('codeCooldownEnd');
+    if (cooldownEnd) {
+      const remainingTime = Math.round((parseInt(cooldownEnd, 10) - Date.now()) / 1000);
+      if (remainingTime > 0) {
+        setIsSending(true);
+        setCountdown(remainingTime);
+      } else {
+        localStorage.removeItem('codeCooldownEnd');
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    // Manages the countdown timer
+    let timer: NodeJS.Timeout;
+    if (isSending && countdown > 0) {
+      timer = setInterval(() => {
+        setCountdown(prev => prev - 1);
+      }, 1000);
+    } else if (isSending && countdown <= 0) {
+      // Countdown finished
+      setIsSending(false);
+      localStorage.removeItem('codeCooldownEnd');
+    }
+    return () => clearInterval(timer);
+  }, [isSending, countdown]);
+
+  const send = async (email: string) => {
+    if (isSending) return;
+    setIsSending(true); // Set sending state immediately to prevent multiple clicks
+    try {
+      await sendEmail({ email });
+      localStorage.setItem('codeCooldownEnd', (Date.now() + COOLDOWN_DURATION * 1000).toString());
+      setCountdown(COOLDOWN_DURATION);
+    } catch (error) {
+      setIsSending(false); // Reset sending state on failure
+      throw error;
+    }
+  };
+
+  return { isSending, countdown, sendVerificationCode: send };
+}
+
+
+// --- Register Component ---
 export default function Register() {
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const { t } = useTranslation();
   const navigate = useNavigate();
+  
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [showSuccessAlert, setShowSuccessAlert] = useState(false);
 
   const [formData, setFormData] = useState({
@@ -19,40 +91,14 @@ export default function Register() {
     auth_code: "",
   });
 
-  const [isSending, setIsSending] = useState(false);
-  const [countdown, setCountdown] = useState(0);
-
-  useEffect(() => {
-    const cooldownEnd = localStorage.getItem('codeCooldownEnd');
-    if (cooldownEnd) {
-      const remainingTime = Math.round((parseInt(cooldownEnd, 10) - Date.now()) / 1000);
-      if (remainingTime > 0) {
-        setIsSending(true);
-        setCountdown(remainingTime);
-        const timer = setInterval(() => {
-          setCountdown(prev => {
-            if (prev <= 1) {
-              clearInterval(timer);
-              setIsSending(false);
-              localStorage.removeItem('codeCooldownEnd');
-              return 0;
-            }
-            return prev - 1;
-          });
-        }, 1000);
-        return () => clearInterval(timer); // Cleanup on unmount
-      } else {
-         localStorage.removeItem('codeCooldownEnd');
-      }
-    }
-  }, []);
+  const { isSending, countdown, sendVerificationCode } = useVerificationCode();
 
   useEffect(() => {
     let timer: NodeJS.Timeout;
     if (showSuccessAlert) {
       timer = setTimeout(() => {
         setShowSuccessAlert(false);
-      }, 5000); // 5秒后自动隐藏
+      }, 5000); // Hide alert after 5 seconds
     }
     return () => clearTimeout(timer);
   }, [showSuccessAlert]);
@@ -62,50 +108,17 @@ export default function Register() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const validateEmail = (email: string): boolean => {
-    if (!email || !/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email)) {
-        return false;
-    }
-    return true;
-  };
-
-  const validatePassword = (password: string): string => {
-      if (!password || password.length < 8 || password.length > 128) {
-          return t('PasswordLengthError');
-      }
-      if (!/^[!-~]+$/.test(password)) {
-          return t('PasswordCharsError');
-      }
-      return "";
-  };
-
   const handleSendCode = async () => {
     if (!validateEmail(formData.email)) {
-      alert(t('InvalidEmail'));
+      toast.error(t('InvalidEmail'), { position: "top-center" });
       return;
     }
-
-    setIsSending(true);
     try {
-      await sendEmail({ email: formData.email });
+      await sendVerificationCode(formData.email);
+      toast.success(t("VerificationCodeSent"), { position: "top-center" });
       setShowSuccessAlert(true);
-      const cooldownDuration = 300; // 5 minutes
-      localStorage.setItem('codeCooldownEnd', (Date.now() + cooldownDuration * 1000).toString());
-      setCountdown(cooldownDuration);
-      const timer = setInterval(() => {
-        setCountdown((prev) => {
-          if (prev <= 1) {
-            clearInterval(timer);
-            setIsSending(false);
-            localStorage.removeItem('codeCooldownEnd');
-            return 0;
-          }
-          return prev - 1;
-        });
-      }, 1000);
     } catch (error) {
-      alert((error as Error).message);
-      setIsSending(false);
+      toast.error((error as Error).message, { position: "top-center" });
     }
   };
 
@@ -113,27 +126,27 @@ export default function Register() {
     e.preventDefault();
 
     if (!validateEmail(formData.email)) {
-        alert(t('InvalidEmail'));
+        toast.error(t('InvalidEmail'), { position: "top-center" });
         return;
     }
 
-    const passwordError = validatePassword(formData.password);
+    const passwordError = validatePassword(formData.password, t);
     if (passwordError) {
-        alert(passwordError);
+        toast.error(passwordError, { position: "top-center" });
         return;
     }
 
     if (formData.password !== formData.password_confirm) {
-      alert(t('PasswordsDoNotMatch'));
+      toast.error(t('PasswordsDoNotMatch'), { position: "top-center" });
       return;
     }
 
     try {
       await register(formData);
-      alert("注册成功！");
+      toast.success(t('RegistrationSuccess'), { position: "top-center" });
       navigate("/login");
     } catch (error) {
-      alert((error as Error).message);
+      toast.error((error as Error).message, { position: "top-center" });
     }
   };
 
@@ -152,9 +165,9 @@ export default function Register() {
           {showSuccessAlert && (
             <Alert className="mb-4">
               <MailCheck className="h-4 w-4" />
-              <AlertTitle>验证码已发送</AlertTitle>
+              <AlertTitle>{t('VerificationCodeSentTitle')}</AlertTitle>
               <AlertDescription>
-                请检查您的邮箱，验证码 5 分钟内有效。
+                {t('VerificationCodeSentDescription')}
               </AlertDescription>
             </Alert>
           )}
@@ -165,7 +178,7 @@ export default function Register() {
             <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">{t('RegisterTitle')}</h2>
             <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">{t('RegisterSubtitle')}</p>
           </div>
-          <form className="space-y-5" onSubmit={handleSubmit}>
+          <form className="space-y-5" onSubmit={handleSubmit} noValidate>
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t('Email')}</label>
               <input
@@ -243,7 +256,7 @@ export default function Register() {
                       disabled={isSending}
                       className="cursor-pointer px-4 py-2 rounded-lg bg-orange-100 dark:bg-orange-900/50 text-orange-600 dark:text-orange-400 font-semibold hover:bg-orange-200 dark:hover:bg-orange-900/80 whitespace-nowrap text-sm disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                      {isSending ? `${countdown}s` : t('SendCode')}
+                      {isSending ? t('ResendAfter', { count: countdown }) : t('SendCode')}
                   </button>
               </div>
             </div>

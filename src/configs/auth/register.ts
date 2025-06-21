@@ -19,6 +19,11 @@ const authRegister = {
     PasswordLengthError: 'Password must be 8-128 characters long',
     PasswordCharsError: 'Password can only contain letters, numbers, and special characters',
     PasswordsDoNotMatch: 'The two passwords do not match',
+    VerificationCodeSent: 'Verification code sent successfully. Please check your email.',
+    ResendAfter: 'Resend in {{count}}s',
+    RegistrationSuccess: 'Registration successful!',
+    VerificationCodeSentTitle: 'Verification code sent',
+    VerificationCodeSentDescription: 'Please check your email. The code is valid for 5 minutes.',
   },
   zh: {
     BackHome: '回到主页',
@@ -40,6 +45,11 @@ const authRegister = {
     PasswordLengthError: '密码长度必须在8-128位之间',
     PasswordCharsError: '密码只能包含字母、数字和特殊字符',
     PasswordsDoNotMatch: '两次输入的密码不一致',
+    VerificationCodeSent: '验证码发送成功，请查收邮件。',
+    ResendAfter: '{{count}}秒后重新发送',
+    RegistrationSuccess: '注册成功！',
+    VerificationCodeSentTitle: '验证码已发送',
+    VerificationCodeSentDescription: '请检查您的邮箱，验证码 5 分钟内有效。',
   }
 }
 export default authRegister
