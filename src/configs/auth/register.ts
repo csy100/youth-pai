@@ -21,9 +21,10 @@ const authRegister = {
     PasswordsDoNotMatch: 'The two passwords do not match',
     VerificationCodeSent: 'Verification code sent successfully. Please check your email.',
     ResendAfter: 'Resend in {{count}}s',
-    RegistrationSuccess: 'Registration successful!',
+    RegistrationSuccess: 'Registration successful! 1 seconds later, you will be redirected to the login page.',
     VerificationCodeSentTitle: 'Verification code sent',
     VerificationCodeSentDescription: 'Please check your email. The code is valid for 5 minutes.',
+    RegistrationFailed: 'Registration failed, account already exists or email is invalid.',
   },
   zh: {
     BackHome: '回到主页',
@@ -47,9 +48,10 @@ const authRegister = {
     PasswordsDoNotMatch: '两次输入的密码不一致',
     VerificationCodeSent: '验证码发送成功，请查收邮件。',
     ResendAfter: '{{count}}秒后重新发送',
-    RegistrationSuccess: '注册成功！',
+    RegistrationSuccess: '注册成功！1秒后自动跳转至登录页面',
     VerificationCodeSentTitle: '验证码已发送',
     VerificationCodeSentDescription: '请检查您的邮箱，验证码 5 分钟内有效。',
+    RegistrationFailed: '注册失败, 账号已存在或邮箱格式不正确。',
   }
 }
 export default authRegister

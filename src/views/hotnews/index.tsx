@@ -23,6 +23,10 @@ export default function HotNews() {
     <button onClick={() => toast.success("Hello", { position: "top-center" })}>
       Show Toast
     </button>
+
+    <button onClick={() => toast.error("Hello", { position: "top-center" })}>
+      Show Toast
+    </button>
     </>
   );
 }

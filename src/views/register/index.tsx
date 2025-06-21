@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
-import { Eye, EyeOff, ArrowLeft, MailCheck } from "lucide-react";
+import { Eye, EyeOff, ArrowLeft } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { sendEmail, register } from "@/services/auth";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { toast } from "sonner";
+import { Toaster } from "@/components/ui/sonner";
 
 const COOLDOWN_DURATION = 300; // 5 minutes in seconds
 
@@ -46,6 +46,7 @@ function useVerificationCode() {
   useEffect(() => {
     // Manages the countdown timer
     let timer: NodeJS.Timeout;
+
     if (isSending && countdown > 0) {
       timer = setInterval(() => {
         setCountdown(prev => prev - 1);
@@ -55,18 +56,35 @@ function useVerificationCode() {
       setIsSending(false);
       localStorage.removeItem('codeCooldownEnd');
     }
-    return () => clearInterval(timer);
+
+    // The cleanup function will be called when the component unmounts
+    // or when the dependencies (isSending, countdown) change.
+    return () => {
+      // It's important to clear the interval to prevent memory leaks.
+      // TypeScript might complain that `timer` could be unassigned,
+      // but in the logic flow where an interval is set, `timer` will always have a value.
+      clearInterval(timer);
+    };
   }, [isSending, countdown]);
 
   const send = async (email: string) => {
     if (isSending) return;
-    setIsSending(true); // Set sending state immediately to prevent multiple clicks
+    
     try {
-      await sendEmail({ email });
-      localStorage.setItem('codeCooldownEnd', (Date.now() + COOLDOWN_DURATION * 1000).toString());
+      // Set sending state before the async call to give immediate feedback
+      setIsSending(true);
       setCountdown(COOLDOWN_DURATION);
+
+      await sendEmail({ email });
+      
+      // On success, set the cooldown in localStorage
+      localStorage.setItem('codeCooldownEnd', (Date.now() + COOLDOWN_DURATION * 1000).toString());
+
     } catch (error) {
-      setIsSending(false); // Reset sending state on failure
+      // On failure, reset the state
+      setIsSending(false); 
+      setCountdown(0);
+      localStorage.removeItem('codeCooldownEnd');
       throw error;
     }
   };
@@ -82,7 +100,6 @@ export default function Register() {
   
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [showSuccessAlert, setShowSuccessAlert] = useState(false);
 
   const [formData, setFormData] = useState({
     email: "",
@@ -93,16 +110,6 @@ export default function Register() {
 
   const { isSending, countdown, sendVerificationCode } = useVerificationCode();
 
-  useEffect(() => {
-    let timer: NodeJS.Timeout;
-    if (showSuccessAlert) {
-      timer = setTimeout(() => {
-        setShowSuccessAlert(false);
-      }, 5000); // Hide alert after 5 seconds
-    }
-    return () => clearTimeout(timer);
-  }, [showSuccessAlert]);
-
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -110,13 +117,16 @@ export default function Register() {
 
   const handleSendCode = async () => {
     if (!validateEmail(formData.email)) {
+      console.log(t('InvalidEmail'));
       toast.error(t('InvalidEmail'), { position: "top-center" });
       return;
     }
     try {
       await sendVerificationCode(formData.email);
-      toast.success(t("VerificationCodeSent"), { position: "top-center" });
-      setShowSuccessAlert(true);
+      toast.success(t("VerificationCodeSentTitle"), {
+        description: t("VerificationCodeSentDescription"),
+        position: "top-center"
+      });
     } catch (error) {
       toast.error((error as Error).message, { position: "top-center" });
     }
@@ -144,9 +154,12 @@ export default function Register() {
     try {
       await register(formData);
       toast.success(t('RegistrationSuccess'), { position: "top-center" });
-      navigate("/login");
+      setTimeout(() => {
+        navigate("/login");
+      }, 1000);
     } catch (error) {
-      toast.error((error as Error).message, { position: "top-center" });
+      console.error("注册请求失败:", error);
+      toast.error(t('RegistrationFailed'), { position: "top-center" });
     }
   };
 
@@ -162,15 +175,6 @@ export default function Register() {
           <span>{t('BackHome')}</span>
         </Link>
         <div className="p-6 sm:p-8 pt-16">
-          {showSuccessAlert && (
-            <Alert className="mb-4">
-              <MailCheck className="h-4 w-4" />
-              <AlertTitle>{t('VerificationCodeSentTitle')}</AlertTitle>
-              <AlertDescription>
-                {t('VerificationCodeSentDescription')}
-              </AlertDescription>
-            </Alert>
-          )}
           <div className="mb-6 text-center">
             <div className="mx-auto mb-3 w-12 h-12 rounded-full bg-orange-500 flex items-center justify-center">
               <span className="text-white text-xl font-bold">Y</span>
@@ -263,7 +267,7 @@ export default function Register() {
 
             <button
               type="submit"
-              className="w-full py-2.5 rounded-lg bg-orange-600 hover:bg-orange-700 text-white font-semibold transition-all duration-300 ease-in-out"
+              className="cursor-pointer w-full py-2.5 rounded-lg bg-orange-600 hover:bg-orange-700 text-white font-semibold transition-all duration-300 ease-in-out"
             >
               {t('RegisterButton')}
             </button>
@@ -278,6 +282,8 @@ export default function Register() {
           </p>
         </div>
       </div>
+
+      <Toaster />
     </div>
   );
 }
